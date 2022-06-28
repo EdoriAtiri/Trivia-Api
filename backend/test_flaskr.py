@@ -53,8 +53,77 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], "Resource not found")
 
-      
+    def test_get_paginated_questions(self):
+        res = self.client().get('/questions')
+        data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['questions']))
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['current_category'], None)
+        self.assertTrue(len(data['categories']))
+    
+    def test_404_for_getting_invalid_page(self):
+        res = self.client().get('/questions?page=4004')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Resource not found')
+  
+    # def test_delete_question_using_id(self):
+    #     res = self.client().delete('/questions/24')
+    #     data = json.loads(res.data)
+
+    #     question = Question.query.filter(Question.id == 24).one_or_none()
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertEqual(data['deleted'], 24)
+    #     self.assertEqual(question, None)
+       
+    def test_if_question_does_not_exist(self):
+        res = self.client().delete('/questions/100')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable entry')
+
+    def test_create_new_question(self):
+        res = self.client().post('/questions', json={'question': 'What football is the real football?', 'answer': 'British Football', 'difficulty': 4, 'category': 6})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['questions']))
+    
+    def test_405_question_creation_not_allowed(self):
+        res = self.client().post('/questions/67', json={'question': 'What football is the real football?', 'answer': 'British Football', 'difficulty': 4, 'category': 6})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Method not allowed')
+    
+    def test_search_questions(self):
+        res = self.client().post('/search_question', json={"searchTerm": "title"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['total_questions'], 2)
+        self.assertTrue(len(data['questions']))
+
+    def test_search_questions_no_results(self):
+        res = self.client().post('/search_question', json={"searchTerm": "untitled"})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['total_questions'], 0)
+        self.assertEqual(len(data['questions']), 0)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

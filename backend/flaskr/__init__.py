@@ -61,12 +61,29 @@ def create_app(test_config=None):
     including pagination (every 10 questions).
     This endpoint should return a list of questions,
     number of total questions, current category, categories.
-
     TEST: At this point, when you start the application
     you should see questions and categories generated,
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+    @app.route("/questions")
+    def get_questions():
+        questions = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, questions)
+        categories = Category.query.order_by(Category.id).all()
+        current_categories = [category.format() for category in categories]
+    
+        if len(current_questions) == 0:
+            abort(404)
+        
+        return jsonify({
+            "success": True,
+            "questions": current_questions,
+            "total_questions": len(Question.query.all()),
+            "categories": current_categories,
+            "current_category": None,
+        })
+    
 
     """
     @TODO:
@@ -75,6 +92,26 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+
+    @app.route("/questions/<int:question_id>", methods=["DELETE"])
+    def delete_question(question_id):
+
+        try:
+            question = Question.query.filter(Question.id == question_id).one_or_none()
+
+            if question is None:
+                abort(422)
+
+            question.delete()
+
+            return jsonify({
+                'success': True,
+                'deleted': question_id,
+            })
+        
+        except:
+            abort(422)
+
 
     """
     @TODO:
@@ -86,6 +123,35 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @app.route('/questions', methods=['POST'])
+    def add_question():
+        body = request.get_json()
+
+        new_question = body.get('question', None)
+        new_answer = body.get('answer', None)
+        new_difficulty = body.get('difficulty', None)
+        new_category = body.get('category', None)
+
+        try:
+            question = Question(
+                question=new_question,
+                answer=new_answer,
+                difficulty=new_difficulty,
+                category=new_category
+            )
+
+            question.insert()
+
+            questions = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, questions)
+
+            return jsonify({
+                'success': True,
+                'questions': current_questions
+               })
+
+        except:
+            abort(422)
 
     """
     @TODO:
@@ -97,6 +163,25 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
+    @app.route('/search_question', methods=['POST'])
+    def search_questions():
+        body = request.get_json()
+
+        search_term = body.get('searchTerm', None)
+
+        try:
+            results = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search_term)))
+
+            current_questions = paginate_questions(request, results)
+
+            return jsonify({
+                'success': True,
+                'questions': current_questions,
+                'total_questions': len(results.all()),
+            })
+
+        except:
+            abort(422)            
 
     """
     @TODO:
@@ -131,6 +216,22 @@ def create_app(test_config=None):
             "error": 404,
             "message": "Resource not found"
         }), 404
+
+    @app.errorhandler(405)
+    def not_allowed(error):
+        return jsonify({
+            "success": False,
+            "error": 405,
+            "message": "Method not allowed"
+        }), 405
+   
+    @app.errorhandler(422)
+    def unprocessable_entry(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "Unprocessable entry"
+        }), 422
 
     return app
 
