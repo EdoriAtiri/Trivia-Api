@@ -173,11 +173,13 @@ def create_app(test_config=None):
             results = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search_term)))
 
             current_questions = paginate_questions(request, results)
+            category = Category.query.filter(Category.id == current_questions[0]['category']).one_or_none()
 
             return jsonify({
                 'success': True,
                 'questions': current_questions,
                 'total_questions': len(results.all()),
+                'current_category': category.type
             })
 
         except:
@@ -191,6 +193,21 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
+    @app.route("/categories/<int:category_id>/questions")
+    def get_question_with_category(category_id):
+        questions = Question.query.filter(Question.category == category_id).all()
+        category = Category.query.filter(Category.id == category_id).one_or_none()
+        
+        if len(questions) == 0:
+            abort(404)
+        
+        return jsonify({
+            "success": True,
+            'questions': [question.format() for question in questions],
+            "total_questions": len(questions),
+            'current_category': category.type
+        })
+
 
     """
     @TODO:
@@ -203,7 +220,7 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-
+    
     """
     @TODO:
     Create error handlers for all expected errors
