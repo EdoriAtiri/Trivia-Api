@@ -73,14 +73,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Resource not found')
   
     # def test_delete_question_using_id(self):
-    #     res = self.client().delete('/questions/24')
+    #     res = self.client().delete('/questions/32')
     #     data = json.loads(res.data)
 
-    #     question = Question.query.filter(Question.id == 24).one_or_none()
+    #     question = Question.query.filter(Question.id == 32).one_or_none()
 
     #     self.assertEqual(res.status_code, 200)
     #     self.assertEqual(data['success'], True)
-    #     self.assertEqual(data['deleted'], 24)
+    #     self.assertEqual(data['deleted'], 32)
     #     self.assertEqual(question, None)
        
     def test_if_question_does_not_exist(self):
@@ -142,6 +142,27 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Resource not found')
+
+    def test_play_quiz_category(self):
+        
+        res = self.client().post('/quizzes', json={
+            "previous_questions": [5, 9],
+            "quiz_category": {"id": 4, "type":"History"}
+            })
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200),
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['question']))
+    
+    def test_422_for_play_quiz_category_without_category_or_prev_question(self):
+        res = self.client().post('/quizzes', json='')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable entry')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
