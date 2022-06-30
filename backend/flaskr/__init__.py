@@ -49,9 +49,17 @@ def create_app(test_config=None):
         if len(categories) == 0:
             abort(404)
 
+        new_category = []
+        for c in current_categories:
+            new_obj = {c['id']: c['type']}
+            new_category.append(new_obj)
+        category_obj = {}
+        for i in new_category:
+            category_obj.update(i)
+
         return jsonify({
             "success": True,
-            "categories": current_categories,
+            "categories": category_obj,
             "total_categories": len(Category.query.all())
         })
 
@@ -72,6 +80,14 @@ def create_app(test_config=None):
         current_questions = paginate_questions(request, questions)
         categories = Category.query.order_by(Category.id).all()
         current_categories = [category.format() for category in categories]
+
+        new_category = []
+        for c in current_categories:
+            new_obj = {c['id']: c['type']}
+            new_category.append(new_obj)
+        category_obj = {}
+        for i in new_category:
+            category_obj.update(i)
     
         if len(current_questions) == 0:
             abort(404)
@@ -80,7 +96,7 @@ def create_app(test_config=None):
             "success": True,
             "questions": current_questions,
             "total_questions": len(Question.query.all()),
-            "categories": current_categories,
+            "categories": category_obj,
             "current_category": None,
         })
     
@@ -220,7 +236,21 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-    
+    @app.route("/quizzes", methods=["POST"])
+    def play_quiz():
+        body = request.get_json()
+
+        category = body.get('quiz_category')
+        prev_question = body.get('previous_questions')
+        category_id = category['id']
+
+        # try:
+           
+        # except:
+        #     abort(422)
+
+
+
     """
     @TODO:
     Create error handlers for all expected errors
