@@ -2,7 +2,7 @@
 
 ## Project Description
 
-This documentation describes the resources that make up the Trivia API.The trivia api is an open source Rest api that allows developers to connect create quizzes and online trivia's through it. This repository also comes with a frontend application that allows developers to demo its abilities. Through this api you can:
+This documentation describes the resources that make up the Trivia API.The trivia api is an open source Rest api that allows developers to display and create quizzes and online trivia's through it. This repository also comes with a frontend application that allows developers to demo its abilities. Through this api you can:
 
 - Retrieve all questions categories or;
 - Filter questions based on their category
@@ -31,8 +31,10 @@ It is advised that you run this project in a virtual environment. Follow the ins
 - Backend Dependency installation
   Follow the instructions below to install the project dependencies with Python's [preferred installer program (PIP)](https://pypi.org/project/pip/).
 
-  1. Change the working directory in your terminal to the backend directory > cd backend/
-  2. Enter the following command > pip install -r requirements.txt
+  1. Change the working directory in your terminal to the backend directory
+     > cd backend/
+  2. Enter the following command
+     > pip install -r requirements.txt
 
 - Frontend Dependency installation
   1. Change the working directory in your terminal to the frontend directory > cd frontend/
