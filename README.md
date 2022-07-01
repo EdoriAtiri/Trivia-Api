@@ -15,7 +15,8 @@ This documentation describes the resources that make up the Trivia API.The trivi
 
 ### Installation
 
-**Requirements**
+#### Requirements
+
 Understanding of Python, Flask and PostgreSQL is necessary to effectively run this program. This project requires the following programs and packages:
 
 - [Python 3.x](https://www.python.org/downloads/)
@@ -25,10 +26,10 @@ Understanding of Python, Flask and PostgreSQL is necessary to effectively run th
 
 It is advised that you run this project in a virtual environment. Follow the instructions in the (python documentation)[https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/] to set up your virtual environment.
 
-**Installing ependencies**
+#### Installing Dependencies
 
 - Backend Dependency installation
-  Follow the instructions below to install the project dependencies with Python's (preferred installer program (PIP))[https://pypi.org/project/pip/].
+  Follow the instructions below to install the project dependencies with Python's (preferred installer program)[https://pypi.org/project/pip/].
 
 1. Change the working directory in your terminal to the backend directory > cd backend/
 2. Enter the following command > pip install -r requirements.txt
@@ -38,19 +39,20 @@ It is advised that you run this project in a virtual environment. Follow the ins
 1. Change the working directory in your terminal to the frontend directory > cd frontend/
 2. Enter the following command > npm install
 
-**Setup the Database**
+#### Setup the Database
+
 In your backend directory, run the following command to populate your database:
 
 > psql trivia < trivia.psql
 
-**Running the Server**
+#### Running the Server
+
 Still in the backend directory, run the following command in your terminal:
 
-> export FLASK_APP=flaskr
-> export FLASK_ENV=development
-> flask run
+`export FLASK_APP=flaskr export FLASK_ENV=development flask run`
 
-**Running the Frontend**
+#### Running the Frontend
+
 The frontend was built using ReactJS. To run it, check into the frontend directory and enter
 
 > npm start
