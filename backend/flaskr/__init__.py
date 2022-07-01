@@ -231,7 +231,6 @@ def create_app(test_config=None):
                 0, len(questions))].format()
             else:
                 next_question = None
-            
 
             return jsonify({
                 'success': True,
@@ -239,7 +238,6 @@ def create_app(test_config=None):
             })
         except:
             abort(422)
-
 
 
     """

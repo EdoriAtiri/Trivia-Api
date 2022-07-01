@@ -155,7 +155,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['question']))
     
-    def test_422_for_play_quiz_category_without_category_or_prev_question(self):
+    def test_422_for_play_quiz_without_category_or_prev_question(self):
         res = self.client().post('/quizzes', json='')
         data = json.loads(res.data)
 
