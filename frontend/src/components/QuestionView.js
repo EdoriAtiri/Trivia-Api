@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import '../stylesheets/App.css';
-import Question from './Question';
-import Search from './Search';
-import $ from 'jquery';
+import React, { Component } from 'react'
+import '../stylesheets/App.css'
+import Question from './Question'
+import Search from './Search'
+import $ from 'jquery'
 
 class QuestionView extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
       questions: [],
       page: 1,
       totalQuestions: 0,
       categories: {},
       currentCategory: null,
-    };
+    }
   }
 
   componentDidMount() {
-    this.getQuestions();
+    this.getQuestions()
   }
 
   getQuestions = () => {
@@ -30,37 +30,37 @@ class QuestionView extends Component {
           totalQuestions: result.total_questions,
           categories: result.categories,
           currentCategory: result.current_category,
-        });
-        return;
+        })
+        return
       },
       error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
+        alert('Unable to load questions. Please try your request again')
+        return
       },
-    });
-  };
+    })
+  }
 
   selectPage(num) {
-    this.setState({ page: num }, () => this.getQuestions());
+    this.setState({ page: num }, () => this.getQuestions())
   }
 
   createPagination() {
-    let pageNumbers = [];
-    let maxPage = Math.ceil(this.state.totalQuestions / 10);
+    let pageNumbers = []
+    let maxPage = Math.ceil(this.state.totalQuestions / 10)
     for (let i = 1; i <= maxPage; i++) {
       pageNumbers.push(
         <span
           key={i}
           className={`page-num ${i === this.state.page ? 'active' : ''}`}
           onClick={() => {
-            this.selectPage(i);
+            this.selectPage(i)
           }}
         >
           {i}
         </span>
-      );
+      )
     }
-    return pageNumbers;
+    return pageNumbers
   }
 
   getByCategory = (id) => {
@@ -72,19 +72,19 @@ class QuestionView extends Component {
           questions: result.questions,
           totalQuestions: result.total_questions,
           currentCategory: result.current_category,
-        });
-        return;
+        })
+        return
       },
       error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
+        alert('Unable to load questions. Please try your request again')
+        return
       },
-    });
-  };
+    })
+  }
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/search_question`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -98,15 +98,15 @@ class QuestionView extends Component {
           questions: result.questions,
           totalQuestions: result.total_questions,
           currentCategory: result.current_category,
-        });
-        return;
+        })
+        return
       },
       error: (error) => {
-        alert('Unable to load questions. Please try your request again');
-        return;
+        alert('Unable to load questions. Please try your request again')
+        return
       },
-    });
-  };
+    })
+  }
 
   questionAction = (id) => (action) => {
     if (action === 'DELETE') {
@@ -115,24 +115,24 @@ class QuestionView extends Component {
           url: `/questions/${id}`, //TODO: update request URL
           type: 'DELETE',
           success: (result) => {
-            this.getQuestions();
+            this.getQuestions()
           },
           error: (error) => {
-            alert('Unable to load questions. Please try your request again');
-            return;
+            alert('Unable to load questions. Please try your request again')
+            return
           },
-        });
+        })
       }
     }
-  };
+  }
 
   render() {
     return (
-      <div className='question-view'>
-        <div className='categories-list'>
+      <div className="question-view">
+        <div className="categories-list">
           <h2
             onClick={() => {
-              this.getQuestions();
+              this.getQuestions()
             }}
           >
             Categories
@@ -142,21 +142,23 @@ class QuestionView extends Component {
               <li
                 key={id}
                 onClick={() => {
-                  this.getByCategory(id);
+                  this.getByCategory(id)
                 }}
               >
                 {this.state.categories[id]}
                 <img
-                  className='category'
-                  alt={`${this.state.categories[id].toLowerCase()}`}
-                  src={`${this.state.categories[id].toLowerCase()}.svg`}
+                  className="category"
+                  alt={`${this.state.categories[id].toString().toLowerCase()}`}
+                  src={`${this.state.categories[id]
+                    .toString()
+                    .toLowerCase()}.svg`}
                 />
               </li>
             ))}
           </ul>
           <Search submitSearch={this.submitSearch} />
         </div>
-        <div className='questions-list'>
+        <div className="questions-list">
           <h2>Questions</h2>
           {this.state.questions.map((q, ind) => (
             <Question
@@ -168,11 +170,11 @@ class QuestionView extends Component {
               questionAction={this.questionAction(q.id)}
             />
           ))}
-          <div className='pagination-menu'>{this.createPagination()}</div>
+          <div className="pagination-menu">{this.createPagination()}</div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default QuestionView;
+export default QuestionView
