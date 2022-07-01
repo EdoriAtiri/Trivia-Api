@@ -71,26 +71,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Resource not found')
-  
-#   Change the id every time you run this test
-    def test_delete_question_using_id(self):
-        res = self.client().delete('/questions/5')
-        data = json.loads(res.data)
-
-        question = Question.query.filter(Question.id == 5).one_or_none()
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'], 5)
-        self.assertEqual(question, None)
-       
-    def test_if_question_does_not_exist(self):
-        res = self.client().delete('/questions/100')
-        data = json.loads(res.data)
-
-        self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'Unprocessable entry')
 
     def test_create_new_question(self):
         res = self.client().post('/questions', json={'question': 'What football is the real football?', 'answer': 'British Football', 'difficulty': 4, 'category': 6})
@@ -164,6 +144,25 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable entry')
 
+#   Change the id every time you run this test
+    def test_delete_question_using_id(self):
+        res = self.client().delete('/questions/5')
+        data = json.loads(res.data)
+
+        question = Question.query.filter(Question.id == 5).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], 5)
+        self.assertEqual(question, None)
+       
+    def test_422_if_question_does_not_exist(self):
+        res = self.client().delete('/questions/100')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable entry')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
