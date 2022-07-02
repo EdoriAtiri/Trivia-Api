@@ -79,9 +79,11 @@ def create_app(test_config=None):
         current_categories = [category.format() for category in categories]
 
         new_category = []
+        current_category_arr = []
         for c in current_categories:
             new_obj = {c['id']: c['type']}
             new_category.append(new_obj)
+            current_category_arr.append(c['type'])
         category_obj = {}
         for i in new_category:
             category_obj.update(i)
@@ -94,7 +96,7 @@ def create_app(test_config=None):
             "questions": current_questions,
             "total_questions": len(Question.query.all()),
             "categories": category_obj,
-            "current_category": None,
+            "current_category": current_category_arr,
         })
 
     """
