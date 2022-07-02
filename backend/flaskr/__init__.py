@@ -8,24 +8,23 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+
 def paginate_questions(request, selection):
-     page = request.args.get("page", 1, type=int)
-     start = (page - 1) * QUESTIONS_PER_PAGE
-     end = start + QUESTIONS_PER_PAGE
+    page = request.args.get("page", 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
 
-     questions = [question.format() for question in selection]
-     current_questions = questions[start:end]
+    questions = [question.format() for question in selection]
+    current_questions = questions[start:end]
 
-     return current_questions
+    return current_questions
+
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
 
-    """
-    Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    """
     CORS(app)
 
     """
@@ -33,8 +32,12 @@ def create_app(test_config=None):
     """
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add(
+            'Access-Control-Allow-Headers',
+            'Content-Type,Authorization,true')
+        response.headers.add(
+            'Access-Control-Allow-Methods',
+            'GET,PUT,POST,DELETE,OPTIONS')
         return response
 
     """
@@ -82,10 +85,10 @@ def create_app(test_config=None):
         category_obj = {}
         for i in new_category:
             category_obj.update(i)
-    
+
         if len(current_questions) == 0:
             abort(404)
-        
+
         return jsonify({
             "success": True,
             "questions": current_questions,
@@ -93,7 +96,6 @@ def create_app(test_config=None):
             "categories": category_obj,
             "current_category": None,
         })
-    
 
     """
     Create an endpoint to DELETE question using a question ID.
@@ -103,7 +105,8 @@ def create_app(test_config=None):
     def delete_question(question_id):
 
         try:
-            question = Question.query.filter(Question.id == question_id).one_or_none()
+            question = Question.query.filter(
+                Question.id == question_id).one_or_none()
 
             if question is None:
                 abort(422)
@@ -114,10 +117,9 @@ def create_app(test_config=None):
                 'success': True,
                 'deleted': question_id,
             })
-        
-        except:
-            abort(422)
 
+        except BaseException:
+            abort(422)
 
     """
     Create an endpoint to POST a new question,
@@ -149,9 +151,9 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'questions': current_questions
-               })
+            })
 
-        except:
+        except BaseException:
             abort(422)
 
     """
@@ -166,10 +168,14 @@ def create_app(test_config=None):
         search_term = body.get('searchTerm', None)
 
         try:
-            results = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(search_term)))
+            results = Question.query.order_by(
+                Question.id).filter(
+                Question.question.ilike(
+                    '%{}%'.format(search_term)))
 
             current_questions = paginate_questions(request, results)
-            category = Category.query.filter(Category.id == current_questions[0]['category']).one_or_none()
+            category = Category.query.filter(
+                Category.id == current_questions[0]['category']).one_or_none()
 
             return jsonify({
                 'success': True,
@@ -178,27 +184,28 @@ def create_app(test_config=None):
                 'current_category': category.type
             })
 
-        except:
-            abort(422)            
+        except BaseException:
+            abort(422)
 
     """
     Create a GET endpoint to get questions based on category.
     """
     @app.route("/categories/<int:category_id>/questions")
     def get_question_with_category(category_id):
-        questions = Question.query.filter(Question.category == category_id).all()
-        category = Category.query.filter(Category.id == category_id).one_or_none()
-        
+        questions = Question.query.filter(
+            Question.category == category_id).all()
+        category = Category.query.filter(
+            Category.id == category_id).one_or_none()
+
         if len(questions) == 0:
             abort(404)
-        
+
         return jsonify({
             "success": True,
             'questions': [question.format() for question in questions],
             "total_questions": len(questions),
             'current_category': category.type
         })
-
 
     """
     Create a POST endpoint to get questions to play the quiz.
@@ -210,7 +217,8 @@ def create_app(test_config=None):
     def play_quiz():
         body = request.get_json()
 
-        # Check if category and previous question actually exist to handle unexpected error
+        # Check if category and previous question actually exist to handle
+        # unexpected error
         if 'category' not in body and 'previous_questions' not in body:
             abort(422)
 
@@ -228,7 +236,7 @@ def create_app(test_config=None):
 
             if len(questions) > 0:
                 next_question = questions[random.randrange(
-                0, len(questions))].format()
+                    0, len(questions))].format()
             else:
                 next_question = None
 
@@ -236,9 +244,8 @@ def create_app(test_config=None):
                 'success': True,
                 'question': next_question
             })
-        except:
+        except BaseException:
             abort(422)
-
 
     """
     Create error handlers for all expected errors
@@ -259,7 +266,7 @@ def create_app(test_config=None):
             "error": 405,
             "message": "Method not allowed"
         }), 405
-   
+
     @app.errorhandler(422)
     def unprocessable_entry(error):
         return jsonify({
@@ -269,4 +276,3 @@ def create_app(test_config=None):
         }), 422
 
     return app
-
