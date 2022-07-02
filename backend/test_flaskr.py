@@ -65,7 +65,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['questions']))
         self.assertTrue(data['total_questions'])
-        self.assertEqual(data['current_category'], None)
+        self.assertEqual(len(data['current_category']), 6)
         self.assertTrue(len(data['categories']))
 
     def test_404_for_getting_invalid_page(self):
