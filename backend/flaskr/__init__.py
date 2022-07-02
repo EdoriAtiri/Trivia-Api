@@ -176,14 +176,16 @@ def create_app(test_config=None):
                     '%{}%'.format(search_term)))
 
             current_questions = paginate_questions(request, results)
-            category = Category.query.filter(
-                Category.id == current_questions[0]['category']).one_or_none()
+
+            matching_questions_category = []
+            for c in current_questions:
+                matching_questions_category.append(c['category'])
 
             return jsonify({
                 'success': True,
                 'questions': current_questions,
                 'total_questions': len(results.all()),
-                'current_category': category.type
+                'current_category': matching_questions_category
             })
 
         except BaseException:
