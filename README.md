@@ -1,5 +1,7 @@
 # TRIVIA API
 
+![Trivia Api frontend screenshot](./public/Trivia.png)
+
 ## Project Description
 
 This documentation describes the resources that make up the Trivia API.The trivia api is an open source Rest api that allows developers to display and create quizzes and online trivia's through it. This repository also comes with a frontend application that allows developers to demo its abilities. Through this api you can:
