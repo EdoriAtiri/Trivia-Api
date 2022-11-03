@@ -1,6 +1,6 @@
 # TRIVIA API
 
-![Trivia Api frontend screenshot](./public/Trivia.png)
+![Trivia Api frontend screenshot](./Trivia.png)
 
 ## Project Description
 
