@@ -488,5 +488,5 @@ This query will return:
 
 ## Contributors
 
-- Edori Atiri contributed to this project, specifically to **init**.py, test_flaskr.py and the README.md file in the projects base directory.
+- Edori Atiri contributed to this project, specifically to flaskr, test_flaskr.py and the README.md file in the projects base directory.
 - This project was originally created by [Udacity](https://www.udacity.com/) and forked from one of [Udacity's github repository's](https://github.com/udacity/cd0037-API-Development-and-Documentation-project)
